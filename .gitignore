@@ -1,0 +1,28 @@
+# Rust build artifacts
+/target
+**/*.rs.bk
+*.pdb
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS cruft
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Local-only temp files
+*.tmp
+
+# Brainstorm/visual-companion scratch
+.superpowers/
+
+# Machine-specific config (folderwatch path) — ship a config.toml.example instead
+config.toml
+
+# Generated containers / reports (runtime output)
+.crawljobs/
