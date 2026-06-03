@@ -1,0 +1,4 @@
+# Copy this file to `config.toml` (next to the jdpackager executable) and edit the path.
+# JDownloader Folder Watch directory. The generated .crawljob is copied here to auto-import.
+# If omitted, defaults to %LOCALAPPDATA%\JDownloader 2.0\folderwatch
+folderwatch_dir = "C:\\Users\\YOURNAME\\AppData\\Local\\JDownloader 2.0\\folderwatch"
