@@ -79,4 +79,12 @@ mod tests {
         assert!(parsed.books[0].source_url.is_none());
         assert!(parsed.books[0].download_links.is_empty());
     }
+
+    #[test]
+    fn parses_small_fixture_file() {
+        let text = std::fs::read_to_string("tests/fixtures/books_small.json").expect("read fixture");
+        let parsed: BooksFile = serde_json::from_str(&text).expect("parse fixture");
+        assert_eq!(parsed.books.len(), 3);
+        assert_eq!(parsed.meta.section.as_deref(), Some("Computer & Internet"));
+    }
 }

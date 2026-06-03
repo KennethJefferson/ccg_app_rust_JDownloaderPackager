@@ -1,0 +1,44 @@
+{
+  "_meta": {
+    "profile": "sanet.st",
+    "schema_version": 1,
+    "section": "Computer & Internet",
+    "book_count": 3,
+    "failed_count": 0
+  },
+  "books": [
+    {
+      "title": "Ultimate CI/CD for Platform Engineering",
+      "isbn": "9349887118",
+      "isbn_verified": false,
+      "source_url": "https://sanet.st/books/5613390-ultimate-ci-cd-platform-engineering",
+      "download_links": {
+        "rapidgator": ["https://rapidgator.net/file/9111b76c/Ultimate_CICD_for_Platform_Engineering.sanet.st.epub.html"],
+        "nitroflare": ["https://nitroflare.com/view/6B2DBAB/Ultimate_CICD_for_Platform_Engineering.sanet.st.epub"]
+      },
+      "all_links": []
+    },
+    {
+      "title": "Mac Life - Nr.07 2026",
+      "isbn": null,
+      "isbn_verified": false,
+      "source_url": "https://sanet.st/books/magazines/5613099-mac-life-nr07-2026",
+      "download_links": {
+        "rapidgator": ["https://rapidgator.net/file/d223089e/sanet.stMacLifeNr.072026.pdf.html"],
+        "nitroflare": ["https://nitroflare.com/view/963B4D4/sanet.st-Mac_Life_-_Nr.07_2026.pdf"],
+        "ddownload": ["https://ddownload.com/eehlr7pqfmwi"]
+      },
+      "all_links": []
+    },
+    {
+      "title": "Nitroflare Only Book",
+      "isbn": null,
+      "isbn_verified": false,
+      "source_url": "https://sanet.st/books/9999999-nitro-only",
+      "download_links": {
+        "nitroflare": ["https://nitroflare.com/view/ZZZ/nitro_only.sanet.st.epub"]
+      },
+      "all_links": []
+    }
+  ]
+}
