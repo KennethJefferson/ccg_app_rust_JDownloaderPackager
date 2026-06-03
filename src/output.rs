@@ -29,9 +29,9 @@ pub fn atomic_write(final_path: &Path, content: &str) -> anyhow::Result<()> {
 /// file is created INSIDE the watch dir so the final rename is same-volume and the
 /// watcher never sees a partial file. Fails if `watch_dir` does not exist.
 pub fn deploy_to_watch(watch_dir: &Path, file_name: &str, content: &str) -> anyhow::Result<PathBuf> {
-    if !watch_dir.exists() {
+    if !watch_dir.is_dir() {
         return Err(anyhow::anyhow!(
-            "JDownloader Folder Watch directory does not exist: {}\n\
+            "JDownloader Folder Watch directory does not exist (or is not a directory): {}\n\
              Set `folderwatch_dir` in config.toml (next to the executable) to your JDownloader \
              folderwatch path, or pass --no-deploy.",
             watch_dir.display()
@@ -114,6 +114,22 @@ mod tests {
         let path = deploy_to_watch(dir.path(), "Computer & Internet.crawljob", "BODY").unwrap();
         assert_eq!(path, dir.path().join("Computer & Internet.crawljob"));
         assert_eq!(fs::read_to_string(&path).unwrap(), "BODY");
+        // No leftover temp file in the watch dir (the rename consumed it).
+        let leftover: Vec<_> = fs::read_dir(dir.path())
+            .unwrap()
+            .filter_map(|e| e.ok())
+            .filter(|e| e.file_name().to_string_lossy().ends_with(".tmp"))
+            .collect();
+        assert!(leftover.is_empty(), "deploy should leave no .tmp in watch dir");
+    }
+
+    #[test]
+    fn deploy_errors_when_watch_dir_is_a_file() {
+        let dir = tempfile::tempdir().unwrap();
+        let file_path = dir.path().join("not_a_dir");
+        fs::write(&file_path, "i am a file").unwrap();
+        let err = deploy_to_watch(&file_path, "x.crawljob", "BODY").unwrap_err();
+        assert!(err.to_string().contains("not a directory"));
     }
 
     #[test]
