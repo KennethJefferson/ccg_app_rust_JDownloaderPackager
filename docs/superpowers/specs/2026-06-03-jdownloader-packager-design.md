@@ -396,9 +396,25 @@ resolves Open Verification item V1 in §5.
 ---
 
 ## 13. Open Items Carried Into Build
-- **V1 (§5):** confirm `->NEW ENTRY<-` whitespace handling and that identical repeated `packageName`
-  collapses to one package, via a live Folder Watch import.
-- Confirm JDownloader tolerates LF-only line endings in `.crawljob` (assumed yes; verify).
-- Decide empty-skip file behavior (lean: do not write when zero skips).
-- Confirm the default `%LOCALAPPDATA%\JDownloader 2.0\folderwatch` path on the user's install (it is
-  install-specific; config overrides it).
+
+### Resolved by live JDownloader verification (2026-06-03)
+- **V1 (§5): RESOLVED.** A real Folder Watch import of the 800-book run confirmed: the `->NEW ENTRY<-`
+  format (LF line endings, no blank lines) imports correctly; all 669 entries collapsed into a single
+  package via the identical repeated `packageName`; collect-only held (nothing auto-started). The
+  imported `.crawljob` was moved to `folderwatch\added\` as expected.
+- **LF line endings: RESOLVED.** JDownloader accepted the LF-only `.crawljob` without issue.
+- **Empty-skip file behavior: RESOLVED** — implemented as "do not write when zero skips."
+- **Default watch path: RESOLVED** — on the user's install the watched folder is the plain
+  `%LOCALAPPDATA%\JDownloader 2.0\folderwatch` (JD's `FolderWatch: Folders` = `["folderwatch"]`,
+  relative to the JD home), which matches this tool's default. (An unrelated `__folderwatch` folder
+  exists on the same machine and is NOT the watched folder — do not point config at it.)
+
+### Known gap (routed upstream — NOT a jdpackager defect)
+- **~107 of 669 books are not Title-renamed** because their rapidgator links use the short
+  `/file/<hash>` form with **no filename/extension anywhere in any of the book's links** (sibling-borrow
+  is not viable — only 2 of 109 had a sibling extension). jdpackager correctly omits `filename=` in this
+  case and JDownloader resolves the host name. The real filename/extension is not present in
+  `books.json`. **Decision:** fix upstream — the scraper should capture the extension from the sanet.st
+  page and record it in `books.json`. When it does, jdpackager will need a small change to read the
+  extension from that new field as a fallback when the URL lacks one (the ~560 books with the long-form
+  URL already rename correctly today).
