@@ -19,6 +19,7 @@ pub fn parse_config(text: &str) -> anyhow::Result<Config> {
 /// Resolve the effective Folder Watch directory:
 /// 1. config.folderwatch_dir if set and non-empty,
 /// 2. else `<local_app_data>/JDownloader 2.0/folderwatch`.
+///
 /// `local_app_data` is passed in for testability (caller supplies env in production).
 pub fn resolve_folderwatch_dir(cfg: &Config, local_app_data: Option<&str>) -> Option<PathBuf> {
     if let Some(dir) = cfg.folderwatch_dir.as_deref() {

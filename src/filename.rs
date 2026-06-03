@@ -67,7 +67,7 @@ pub fn sanitize_stem(title: &str) -> String {
     let collapsed = out.split_whitespace().collect::<Vec<_>>().join(" ");
 
     // 3. Trim trailing dots and spaces (Windows forbids them).
-    let trimmed = collapsed.trim_end_matches(|c: char| c == '.' || c == ' ').to_string();
+    let trimmed = collapsed.trim_end_matches(['.', ' ']).to_string();
 
     // 4. Fall back if empty.
     let mut result = if trimmed.is_empty() { "untitled".to_string() } else { trimmed };
@@ -76,7 +76,7 @@ pub fn sanitize_stem(title: &str) -> String {
     if result.chars().count() > MAX_STEM_CHARS {
         result = result.chars().take(MAX_STEM_CHARS).collect();
         // Re-trim trailing space/dot that truncation may have exposed.
-        result = result.trim_end_matches(|c: char| c == '.' || c == ' ').to_string();
+        result = result.trim_end_matches(['.', ' ']).to_string();
         if result.is_empty() {
             result = "untitled".to_string();
         }
