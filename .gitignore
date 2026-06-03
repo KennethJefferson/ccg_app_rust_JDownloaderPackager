@@ -27,6 +27,19 @@ config.toml
 # Generated containers / reports (runtime output)
 .crawljobs/
 
+# Tooling / scratch / workspace scaffolding (not part of the project source)
+.claude/
+.pi/
+__files.ccg/
+__files.pi/
+__references/
+__research/
+__solutions/
+__docs/
+
+# Stray local folderwatch output dir (if a deploy ever targets the repo)
+/folderwatch/
+
 
 # Added by cargo
 #
