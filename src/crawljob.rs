@@ -1,6 +1,7 @@
 //! Render selected entries into JDownloader .crawljob properties text.
 
 use crate::select::Entry;
+use std::fmt::Write;
 
 /// Options that apply to every entry in the file.
 pub struct RenderOptions<'a> {
@@ -15,17 +16,15 @@ pub fn render(entries: &[Entry], opts: &RenderOptions) -> String {
     let mut out = String::new();
     for e in entries {
         out.push_str("->NEW ENTRY<-\n");
-        out.push_str(&format!("text={}\n", e.url));
+        let _ = writeln!(out, "text={}", e.url);
         if let Some(name) = &e.filename {
-            out.push_str(&format!("filename={}\n", name));
+            let _ = writeln!(out, "filename={}", name);
         }
-        out.push_str(&format!("packageName={}\n", opts.package_name));
+        let _ = writeln!(out, "packageName={}", opts.package_name);
         if let Some(df) = opts.download_folder {
-            out.push_str(&format!("downloadFolder={}\n", df));
+            let _ = writeln!(out, "downloadFolder={}", df);
         }
-        out.push_str("autoConfirm=FALSE\n");
-        out.push_str("autoStart=FALSE\n");
-        out.push_str("enabled=TRUE\n");
+        out.push_str("autoConfirm=FALSE\nautoStart=FALSE\nenabled=TRUE\n");
     }
     out
 }
@@ -104,5 +103,22 @@ enabled=TRUE
     fn empty_entries_render_empty_string() {
         let opts = RenderOptions { package_name: "S", download_folder: None };
         assert_eq!(render(&[], &opts), "");
+    }
+
+    #[test]
+    fn renders_no_filename_with_download_folder() {
+        let entries = vec![entry("https://ddownload.com/abc123", None, "ddownload")];
+        let opts = RenderOptions { package_name: "Sec", download_folder: Some("D:\\Books") };
+        let out = render(&entries, &opts);
+        let expected = "\
+->NEW ENTRY<-
+text=https://ddownload.com/abc123
+packageName=Sec
+downloadFolder=D:\\Books
+autoConfirm=FALSE
+autoStart=FALSE
+enabled=TRUE
+";
+        assert_eq!(out, expected);
     }
 }
