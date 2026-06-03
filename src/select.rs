@@ -85,6 +85,7 @@ pub fn select_all(books: &[Book], preferred: Option<&'static str>) -> Selection 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::hosts::NITROFLARE;
     use std::collections::HashMap;
 
     fn book(title: &str, links: &[(&str, &str)]) -> Book {
@@ -144,5 +145,39 @@ mod tests {
         assert_eq!(sel.entries.len(), 0);
         assert_eq!(sel.skips.len(), 1);
         assert_eq!(sel.skips[0].reason, "missing title");
+    }
+
+    #[test]
+    fn preferred_host_selects_nitroflare_over_default() {
+        // Book has both nitroflare and rapidgator. With preferred = nitroflare,
+        // the nitroflare link must be chosen (default chain would pick rapidgator).
+        let books = vec![book(
+            "Delta",
+            &[
+                ("rapidgator", "https://rapidgator.net/file/d/Delta.epub.html"),
+                ("nitroflare", "https://nitroflare.com/v/D/Delta.sanet.st.epub"),
+            ],
+        )];
+        let sel = select_all(&books, Some(NITROFLARE));
+        assert_eq!(sel.entries.len(), 1);
+        assert_eq!(sel.entries[0].host, "nitroflare");
+        assert_eq!(sel.entries[0].url, "https://nitroflare.com/v/D/Delta.sanet.st.epub");
+        assert_eq!(sel.entries[0].filename.as_deref(), Some("Delta.epub"));
+        assert_eq!(*sel.host_counts.get("nitroflare").unwrap(), 1);
+    }
+
+    #[test]
+    fn host_counts_accumulates_multiple_hosts() {
+        // Two books resolved from different hosts under the default chain:
+        // one rapidgator, one ddownload-only (no rapidgator present).
+        let books = vec![
+            book("Echo", &[("rapidgator", "https://rapidgator.net/file/e/Echo.pdf.html")]),
+            book("Foxtrot", &[("ddownload", "https://ddownload.com/file/f/Foxtrot.pdf")]),
+        ];
+        let sel = select_all(&books, None);
+        assert_eq!(sel.entries.len(), 2);
+        assert_eq!(*sel.host_counts.get("rapidgator").unwrap(), 1);
+        assert_eq!(*sel.host_counts.get("ddownload").unwrap(), 1);
+        assert_eq!(sel.host_counts.len(), 2);
     }
 }
