@@ -73,6 +73,23 @@ fn host_nf_changes_selection_counts() {
         stdout.contains("nitroflare ") && !stdout.contains("nitroflare 0"),
         "with --host nf, nitroflare count should be > 0. stdout: {stdout}"
     );
+
+    // Contrast: under the DEFAULT chain (rapidgator -> ddownload, nitroflare excluded),
+    // nitroflare must NOT be selected for any book. This proves --host nf actually
+    // changed selection rather than nitroflare being chosen anyway.
+    let default_out = tmp.path().join("default.crawljob");
+    let default_str = default_out.to_string_lossy().to_string();
+    let (dcode, dstdout, _dstderr) = run_bin(&[
+        "tests/fixtures/books_real.json",
+        "--no-deploy",
+        "-o",
+        &default_str,
+    ]);
+    assert!(dcode == 0 || dcode == 1);
+    assert!(
+        !dstdout.contains("nitroflare "),
+        "default chain must never select nitroflare. stdout: {dstdout}"
+    );
 }
 
 #[test]
