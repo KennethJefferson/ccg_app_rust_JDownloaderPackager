@@ -101,8 +101,13 @@ fn run() -> anyhow::Result<u8> {
     atomic_write(&artifact_path, &body)
         .map_err(|e| anyhow::anyhow!("failed to write artifact {}: {e}", artifact_path.display()))?;
 
-    // Write skipped report next to the artifact.
-    let skipped_path = artifact_path.with_file_name(format!("{file_stem}.skipped.json"));
+    // Write skipped report next to the artifact, named after the artifact's own stem
+    // (so `-o custom.crawljob` yields `custom.skipped.json`, not a section-named sidecar).
+    let report_stem = artifact_path
+        .file_stem()
+        .map(|s| s.to_string_lossy().to_string())
+        .unwrap_or_else(|| file_stem.clone());
+    let skipped_path = artifact_path.with_file_name(format!("{report_stem}.skipped.json"));
     let skipped_written = write_skipped_report(
         &skipped_path,
         &section,
